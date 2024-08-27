@@ -14,7 +14,6 @@ public:
     void handleEvent(sf::Event event);
     void updateNeigboursNode(); 
     void drawnode(sf::RenderWindow& window);
-    //void includeDiagonals();
     bool includeDiagonalsFlag = true;
 
 protected:

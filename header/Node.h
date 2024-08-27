@@ -11,8 +11,8 @@ public:
 
     bool isObstacle = false;
     bool isVisited = false;
-    float globalGoal = INFINITY;
-    float localGoal = INFINITY;
+    float globalGoal = INFINITY; // represents the actual cost 'g' of the node 
+    float localGoal = INFINITY;  // represents the total estimated cost i.e (f = g + h) 
     int x, y;
     std::vector<Node*> neighbors;
     Node* parent = nullptr;
