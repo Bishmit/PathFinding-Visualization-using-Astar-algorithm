@@ -13,6 +13,7 @@ public:
     void solveAStar();
     void handleEvent(sf::Event event);
     void updateNeigboursNode(); 
+    void drawnode(sf::RenderWindow& window);
     //void includeDiagonals();
     bool includeDiagonalsFlag = true;
 
@@ -26,7 +27,7 @@ private:
     int mapWidth;
     int mapHeight;
     static const int nodeSize = 20;
-    
+    std::vector<std::vector<sf::RectangleShape>> rectangles;
 
     sf::Text text, text2;
     sf::Text textGreen, textRed, textGray;

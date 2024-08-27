@@ -1,15 +1,29 @@
 #include "../header/Pathfinding.h"
 
 Pathfinding::Pathfinding(int width, int height) : mapWidth(width), mapHeight(height) {
-    inittext(); 
+    inittext();
     nodes.reserve(mapWidth * mapHeight);
+
+    // Initialize rectangles as a 2D vector
+    rectangles.resize(mapHeight, std::vector<sf::RectangleShape>(mapWidth));
+
+    float shiftX = 3.5f; // Shift right // lazy adjustment
+    float shiftY = 3.5f; // Shift down
+
     for (int y = 0; y < mapHeight; ++y) {
         for (int x = 0; x < mapWidth; ++x) {
-            nodes.emplace_back(x, y);
+            Node node(x, y);
+            nodes.push_back(node);
+
+            sf::RectangleShape& rectangle = rectangles[y][x];
+            rectangle.setSize(sf::Vector2f(nodeSize, nodeSize));
+            rectangle.setPosition(x * nodeSize + shiftX , y * nodeSize + shiftY);
+            rectangle.setFillColor(sf::Color(255, 255, 0, 50)); 
+            rectangle.setScale(sf::Vector2f(0.5f, 0.5f)); 
         }
     }
-
 }
+
 
 void Pathfinding::updateNeigboursNode()
 {
@@ -128,13 +142,13 @@ void Pathfinding::draw(sf::RenderTarget& target, sf::RenderStates states) const 
     sf::RectangleShape rect(sf::Vector2f(nodeSize, nodeSize));
     rect.setFillColor(sf::Color::Black); // Set background color to black
     target.clear(sf::Color(300, 300, 300)); // Clear the window with a black background
-
+    
     for (int y = 0; y < mapHeight; ++y) {
         for (int x = 0; x < mapWidth; ++x) {
             const Node& node = nodes[y * mapWidth + x];
             rect.setPosition(x * nodeSize, y * nodeSize);
             if (node.isObstacle) {
-                rect.setFillColor(sf::Color::Cyan);
+                rect.setFillColor(sf::Color(255, 165, 0, 250));
             }
             else if (&node == startNode) {
                 rect.setFillColor(sf::Color::Green);
@@ -143,13 +157,29 @@ void Pathfinding::draw(sf::RenderTarget& target, sf::RenderStates states) const 
                 rect.setFillColor(sf::Color::Red);
             }
             else if (node.isVisited) {
-                rect.setFillColor(sf::Color(20, 20, 20));
+                rect.setFillColor(sf::Color(0, 255, 0, 20));
             }
             else {
                 rect.setFillColor(sf::Color::Black);
             }
             target.draw(rect, states);
+           
         }
+    }
+
+    // Draw path with small squares
+    sf::RectangleShape pathSquare(sf::Vector2f(nodeSize * 0.5f, nodeSize * 0.5f)); // Small square
+    pathSquare.setFillColor(sf::Color(255, 255, 0, 128)); // Semi-transparent yellow
+
+    if (endNode != nullptr) {
+        Node* p = endNode;
+        while (p->parent != nullptr) {
+            pathSquare.setPosition(p->x * nodeSize + nodeSize * 0.25f, p->y * nodeSize + nodeSize * 0.25f);
+            target.draw(pathSquare, states);
+            p = p->parent;
+        }
+        pathSquare.setPosition(startNode->x * nodeSize + nodeSize * 0.25f, startNode->y * nodeSize + nodeSize * 0.25f);
+        target.draw(pathSquare, states);
     }
 
     sf::VertexArray path(sf::LinesStrip);
@@ -166,6 +196,16 @@ void Pathfinding::draw(sf::RenderTarget& target, sf::RenderStates states) const 
     target.draw(text2, states);
     target.draw(textGreen, states);
     target.draw(textRed, states); 
+}
+
+void Pathfinding::drawnode(sf::RenderWindow& window)
+{
+    for (int y = 0; y < mapHeight; ++y) {
+        for (int x = 0; x < mapWidth; ++x) {
+            
+            window.draw(rectangles[y][x]); 
+        }
+    }
 }
 
 
