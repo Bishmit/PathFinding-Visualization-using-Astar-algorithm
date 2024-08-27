@@ -9,19 +9,47 @@ Pathfinding::Pathfinding(int width, int height) : mapWidth(width), mapHeight(hei
         }
     }
 
+}
+
+void Pathfinding::updateNeigboursNode()
+{
     for (int y = 0; y < mapHeight; ++y) {
         for (int x = 0; x < mapWidth; ++x) {
             Node& node = nodes[y * mapWidth + x];
+            node.neighbors.clear();
+
+            // Up
             if (y > 0) node.neighbors.push_back(&nodes[(y - 1) * mapWidth + x]);
+
+            // Down
             if (y < mapHeight - 1) node.neighbors.push_back(&nodes[(y + 1) * mapWidth + x]);
+
+            // Left
             if (x > 0) node.neighbors.push_back(&nodes[y * mapWidth + (x - 1)]);
+
+            // Right
             if (x < mapWidth - 1) node.neighbors.push_back(&nodes[y * mapWidth + (x + 1)]);
+
+            // Diagonals (Only if the flag is true)
+            if (includeDiagonalsFlag == false) {
+                // Top-Left
+                if (x > 0 && y > 0) node.neighbors.push_back(&nodes[(y - 1) * mapWidth + (x - 1)]);
+
+                // Top-Right
+                if (x < mapWidth - 1 && y > 0) node.neighbors.push_back(&nodes[(y - 1) * mapWidth + (x + 1)]);
+
+                // Bottom-Left
+                if (x > 0 && y < mapHeight - 1) node.neighbors.push_back(&nodes[(y + 1) * mapWidth + (x - 1)]);
+
+                // Bottom-Right
+                if (x < mapWidth - 1 && y < mapHeight - 1) node.neighbors.push_back(&nodes[(y + 1) * mapWidth + (x + 1)]);
+            }
         }
     }
 
     startNode = &nodes[(mapHeight / 2) * mapWidth + 1];
     endNode = &nodes[(mapHeight / 2) * mapWidth + mapWidth - 2];
-}
+} 
 
 void Pathfinding::solveAStar() {
     for (auto& node : nodes) {
@@ -67,6 +95,13 @@ void Pathfinding::solveAStar() {
 }
 
 void Pathfinding::handleEvent(sf::Event event) {
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::D) {
+            includeDiagonalsFlag = !includeDiagonalsFlag;  // Toggle the flag
+            updateNeigboursNode();  // Update neighbors immediately after toggling
+        }
+    }
+
     if (event.type == sf::Event::MouseButtonReleased) {
         int x = event.mouseButton.x / nodeSize;
         int y = event.mouseButton.y / nodeSize;
@@ -148,26 +183,26 @@ void Pathfinding::inittext()
     text.setString("To Block &\nUnblock the path:\n-Mouse leftclick");
     text.setCharacterSize(18);
     text.setFillColor(sf::Color::White);
-    text.setPosition(405.f, 150.f);
+    text.setPosition(405.f, 325.f);
 
 
     textGreen.setFont(font);
     textGreen.setString("Green: Starting Node");
     textGreen.setCharacterSize(18);
     textGreen.setFillColor(sf::Color::Green);
-    textGreen.setPosition(405.f, 50.f);
+    textGreen.setPosition(405.f, 20.f);
 
 
     textRed.setFont(font);
     textRed.setString("Red: Ending Node");
     textRed.setCharacterSize(18);
     textRed.setFillColor(sf::Color::Red);
-    textRed.setPosition(405.f, 80.f);
+    textRed.setPosition(405.f, 60.f);
 
     text2.setFont(font2);
-    text2.setString("Gray: Total path visited");
+    text2.setString("Gray: Total path visited\n\nLshift: Relocate the star\nting node\n\nLctrl: Relocate the end\ning node\n\nTo include/exclude \ndiagonal path: D");
     text2.setCharacterSize(18);
     text2.setFillColor(sf::Color::White);
-    text2.setPosition(405.f, 110.f);
+    text2.setPosition(405.f, 100.f);
 
 }

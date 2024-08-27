@@ -4,6 +4,7 @@
 int main() {
     sf::RenderWindow window(sf::VideoMode(600, 400), "AStar Pathfinding");
     Pathfinding pathfinding(20, 20);
+    pathfinding.updateNeigboursNode(); 
 
 
     while (window.isOpen()) {

@@ -12,6 +12,9 @@ public:
 
     void solveAStar();
     void handleEvent(sf::Event event);
+    void updateNeigboursNode(); 
+    //void includeDiagonals();
+    bool includeDiagonalsFlag = true;
 
 protected:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -23,6 +26,7 @@ private:
     int mapWidth;
     int mapHeight;
     static const int nodeSize = 20;
+    
 
     sf::Text text, text2;
     sf::Text textGreen, textRed, textGray;
