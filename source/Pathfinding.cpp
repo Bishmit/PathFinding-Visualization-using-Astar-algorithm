@@ -14,7 +14,7 @@ Pathfinding::Pathfinding(int width, int height) : mapWidth(width), mapHeight(hei
             Node node(x, y);
             nodes.push_back(node);
 
-            auto& rectangle = rectangles[y][x];
+            sf::RectangleShape& rectangle = rectangles[y][x];
             rectangle.setSize(sf::Vector2f(nodeSize, nodeSize));
             rectangle.setPosition(x * nodeSize + shiftX , y * nodeSize + shiftY);
             rectangle.setFillColor(sf::Color(255, 255, 0, 50)); 
@@ -134,7 +134,8 @@ void Pathfinding::handleEvent(sf::Event event)
             if (event.mouseButton.button == sf::Mouse::Left) {
                 // this will take starting node and ending node to the position of mouse co-ordinates
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
-                    startNode = &nodes[y * mapWidth + x]; 
+                    startNode = &nodes[y * mapWidth + x];
+                    std::cout << x << " " << y << std::endl; 
                 }
                 else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
                     endNode = &nodes[y * mapWidth + x];
@@ -150,7 +151,6 @@ void Pathfinding::handleEvent(sf::Event event)
     if (event.type == sf::Event::KeyPressed) {
         if (event.key.code == sf::Keyboard::D) { 
             includeDiagonalsFlag = !includeDiagonalsFlag;  // Toggle the flag
-           // std::cout << temp_x << " " << temp_y << "\n"; 
             Dpressed = true;
             updateNeigboursNode();  // Update neighbors immediately after    
             solveAStar();
