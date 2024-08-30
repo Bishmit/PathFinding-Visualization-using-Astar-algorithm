@@ -135,7 +135,6 @@ void Pathfinding::handleEvent(sf::Event event)
                 // this will take starting node and ending node to the position of mouse co-ordinates
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
                     startNode = &nodes[y * mapWidth + x];
-                    std::cout << x << " " << y << std::endl; 
                 }
                 else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
                     endNode = &nodes[y * mapWidth + x];
