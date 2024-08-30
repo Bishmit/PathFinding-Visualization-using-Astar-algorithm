@@ -4,24 +4,32 @@
 
 Pathfinding Visualization is a C++ application using SFML (Simple and Fast Multimedia Library) to visualize the A* pathfinding algorithm. The application allows users to interactively block and unblock paths and see the algorithm in action.
 
-![Screenshot](pathfindingimage.png) 
-<br>
-when the path can be found it looks for all the option dark gray is all the possible path covered
-<br>
-![Screenshot](pathblocked.png) 
-<br>
-if the path is blocked than it cannot goes to the final destination
-<br>
+When the path can be found, it explores all the possible paths. Dark gray represents all the possible paths covered by the A* algorithm. Use the **Mouse Left Click** to place obstacles between the start and end nodes.
+
+![Screenshot](Assets/demo_screenshots/demo1.png) 
+
+We can adjust the nodes as desired, and the path will update in real-time with **LShift + Mouse Left Click** and **LCtrl + Mouse Left Click**.
+
+![Screenshot](Assets/demo_screenshots/demo2.png)  
+
+You can also include diagonal paths by pressing **D**, allowing the search to occur diagonally in eight directions.
+
+![Screenshot](Assets/demo_screenshots/demo3.png) 
+
+If all possible paths are blocked, the algorithm cannot reach the final destination.
+
+![Screenshot](Assets/demo_screenshots/demo4.png) 
 
 ## Features
 
 - Visualize the A* pathfinding algorithm.
 - Block and unblock paths using mouse clicks.
-- Different colors to represent the starting node, end node, and visited paths.
+- Different colors represent the starting node, end node, and visited paths.
+- Can Search Diagonally and non-Diagonally on Runtime. 
+
+---
 
 ## Installation
-
-Follow these steps to set up and run the project on your device:
 
 1. **Clone the Repository:**
 
