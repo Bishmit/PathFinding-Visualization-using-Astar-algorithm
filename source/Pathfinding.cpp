@@ -1,7 +1,6 @@
 #include "../header/Pathfinding.h"
 
-Pathfinding::Pathfinding(int width, int height) : mapWidth(width), mapHeight(height), temp_x(0), temp_y(0) {
-    inittext();
+Pathfinding::Pathfinding(int width, int height) : mapWidth(width), mapHeight(height), temp_x(0), temp_y(0), startNode(nullptr), endNode(nullptr) {
     nodes.reserve(mapWidth * mapHeight);
 
     // Initialize rectangles as a 2D vector
@@ -15,7 +14,7 @@ Pathfinding::Pathfinding(int width, int height) : mapWidth(width), mapHeight(hei
             Node node(x, y);
             nodes.push_back(node);
 
-            sf::RectangleShape& rectangle = rectangles[y][x];
+            auto& rectangle = rectangles[y][x];
             rectangle.setSize(sf::Vector2f(nodeSize, nodeSize));
             rectangle.setPosition(x * nodeSize + shiftX , y * nodeSize + shiftY);
             rectangle.setFillColor(sf::Color(255, 255, 0, 50)); 
@@ -45,7 +44,7 @@ void Pathfinding::updateNeigboursNode()
             if (x < mapWidth - 1) node.neighbors.push_back(&nodes[y * mapWidth + (x + 1)]);
 
             // Upper condition add verticals and horizontal neigbours in grid and if we have to include Diagonals neigbours we can do follow things
-            if (includeDiagonalsFlag == false) {
+            if (!includeDiagonalsFlag) {
                 // Top-Left
                 if (x > 0 && y > 0) node.neighbors.push_back(&nodes[(y - 1) * mapWidth + (x - 1)]);
 
@@ -79,7 +78,8 @@ void Pathfinding::updateNeigboursNode()
     }
 }
 
-void Pathfinding::solveAStar() {
+void Pathfinding::solveAStar() 
+{
     for (auto& node : nodes) {
         node.isVisited = false; // Marks all nodes as not visited intially 
         node.globalGoal = INFINITY; // initially, estimated cost from start node to end node is assigned infinty 
@@ -122,7 +122,8 @@ void Pathfinding::solveAStar() {
     }
 }
 
-void Pathfinding::handleEvent(sf::Event event) {
+void Pathfinding::handleEvent(sf::Event event) 
+{
     // this will toggle when D is pressed allowing path to visit diagonally in all 8 direction 
     if (event.type == sf::Event::MouseButtonReleased) {
         int x = event.mouseButton.x / nodeSize;
@@ -133,8 +134,7 @@ void Pathfinding::handleEvent(sf::Event event) {
             if (event.mouseButton.button == sf::Mouse::Left) {
                 // this will take starting node and ending node to the position of mouse co-ordinates
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
-                    startNode = &nodes[y * mapWidth + x];
-                    std::cout << x << " " << y << std::endl; 
+                    startNode = &nodes[y * mapWidth + x]; 
                 }
                 else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
                     endNode = &nodes[y * mapWidth + x];
@@ -158,7 +158,8 @@ void Pathfinding::handleEvent(sf::Event event) {
     }
 }
 
-void Pathfinding::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void Pathfinding::draw(sf::RenderTarget& target, sf::RenderStates states) const 
+{
     sf::RectangleShape rect(sf::Vector2f(nodeSize, nodeSize));
     rect.setFillColor(sf::Color::Black); // Set background color to black
     target.clear(sf::Color(300, 300, 300)); // Clear the window with a black background
@@ -183,7 +184,7 @@ void Pathfinding::draw(sf::RenderTarget& target, sf::RenderStates states) const 
                 rect.setFillColor(sf::Color::Black);
             }
             target.draw(rect, states);
-           
+            textManager.drawTexts(target); // drawing text 
         }
     }
 
@@ -211,11 +212,7 @@ void Pathfinding::draw(sf::RenderTarget& target, sf::RenderStates states) const 
         }
         path.append(sf::Vertex(sf::Vector2f(startNode->x * nodeSize + nodeSize / 2, startNode->y * nodeSize + nodeSize / 2), sf::Color::Yellow));
     }
-    target.draw(path, states);
-    target.draw(text, states); 
-    target.draw(text2, states);
-    target.draw(textGreen, states);
-    target.draw(textRed, states); 
+    target.draw(path, states); 
 }
 
 void Pathfinding::drawnode(sf::RenderWindow& window)
@@ -228,42 +225,3 @@ void Pathfinding::drawnode(sf::RenderWindow& window)
     }
 }
 
-
-void Pathfinding::inittext()
-{
-    // this are just for writing stuffs on SFML 
-
-    if (!font.loadFromFile("Assets/Font/Arial.ttf")) {
-        std::cerr << "Failed to load font!" << std::endl;
-    }
-
-    if (!font2.loadFromFile("Assets/Font/Arial.ttf")) {
-        std::cerr << "Failed to load font!" << std::endl;
-    }
-
-    text.setFont(font);
-    text.setString("To Block &\nUnblock the path:\n-Mouse leftclick");
-    text.setCharacterSize(18);
-    text.setFillColor(sf::Color::White);
-    text.setPosition(405.f, 325.f);
-
-
-    textGreen.setFont(font);
-    textGreen.setString("Green: Starting Node");
-    textGreen.setCharacterSize(18);
-    textGreen.setFillColor(sf::Color::Green);
-    textGreen.setPosition(405.f, 20.f);
-
-
-    textRed.setFont(font);
-    textRed.setString("Red: Ending Node");
-    textRed.setCharacterSize(18);
-    textRed.setFillColor(sf::Color::Red);
-    textRed.setPosition(405.f, 60.f);
-
-    text2.setFont(font2);
-    text2.setString("Gray: Total path visited\n\nLshift: Relocate the star\nting node\n\nLctrl: Relocate the end\ning node\n\nTo include/exclude \ndiagonal path: D");
-    text2.setCharacterSize(18);
-    text2.setFillColor(sf::Color::White);
-    text2.setPosition(405.f, 100.f);
-}

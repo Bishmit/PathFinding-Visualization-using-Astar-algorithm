@@ -136,13 +136,16 @@
     <ClCompile Include="source\Node.cpp" />
     <ClCompile Include="source\Pathfinding.cpp" />
     <ClCompile Include="source\main.cpp" />
+    <ClCompile Include="source\TextManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\Pathfinding.h" />
     <ClInclude Include="header\Node.h" />
+    <ClInclude Include="header\TextManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Assets\Font\Arial.ttf" />
+    <Font Include="Assets\Font\PixellettersFull.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

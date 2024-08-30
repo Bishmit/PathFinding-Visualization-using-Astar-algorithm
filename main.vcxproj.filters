@@ -24,6 +24,9 @@
     <ClCompile Include="source\Node.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="source\TextManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\Pathfinding.h">
@@ -32,8 +35,12 @@
     <ClInclude Include="header\Node.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="header\TextManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Font Include="Assets\Font\Arial.ttf" />
+    <Font Include="Assets\Font\PixellettersFull.ttf" />
   </ItemGroup>
 </Project>

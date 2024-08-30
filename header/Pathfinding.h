@@ -5,17 +5,15 @@
 #include <vector>
 #include <list>
 #include "../header/Node.h"
+#include "../header/TextManager.h"
 
 class Pathfinding : public sf::Drawable {
 public:
     Pathfinding(int width, int height);
-
-    void solveAStar();
     void handleEvent(sf::Event event);
     void updateNeigboursNode(); 
     void drawnode(sf::RenderWindow& window);
-    bool includeDiagonalsFlag = true, Dpressed = false; 
-
+   
 protected:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
@@ -23,8 +21,10 @@ private:
     std::vector<Node> nodes;
     Node* startNode;
     Node* endNode;
-    int mapWidth; int temp_x, temp_y; 
-    int mapHeight;
+    TextManager textManager; 
+    int temp_x, temp_y;
+    size_t mapWidth; 
+    size_t mapHeight;
     static const int nodeSize = 20;
     std::vector<std::vector<sf::RectangleShape>> rectangles;
 
@@ -33,10 +33,10 @@ private:
     sf::Font font, font2;
     sf::RectangleShape rectangle1;
     sf::RectangleShape rectangle2;
+    bool includeDiagonalsFlag = true, Dpressed = false;
 
-    // function 
-    void inittext(); 
-
+    // Private function 
+    void solveAStar();
 };
 
 #endif 
