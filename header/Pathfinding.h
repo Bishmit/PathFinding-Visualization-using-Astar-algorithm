@@ -14,7 +14,7 @@ public:
     void handleEvent(sf::Event event);
     void updateNeigboursNode(); 
     void drawnode(sf::RenderWindow& window);
-    bool includeDiagonalsFlag = true;
+    bool includeDiagonalsFlag = true, Dpressed = false; 
 
 protected:
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -23,7 +23,7 @@ private:
     std::vector<Node> nodes;
     Node* startNode;
     Node* endNode;
-    int mapWidth;
+    int mapWidth; int temp_x, temp_y; 
     int mapHeight;
     static const int nodeSize = 20;
     std::vector<std::vector<sf::RectangleShape>> rectangles;

@@ -1,6 +1,6 @@
 #include "../header/Pathfinding.h"
 
-Pathfinding::Pathfinding(int width, int height) : mapWidth(width), mapHeight(height) {
+Pathfinding::Pathfinding(int width, int height) : mapWidth(width), mapHeight(height), temp_x(0), temp_y(0) {
     inittext();
     nodes.reserve(mapWidth * mapHeight);
 
@@ -62,9 +62,22 @@ void Pathfinding::updateNeigboursNode()
     }
 
     // initiall startNode and endNode Position setup 
-    startNode = &nodes[(mapHeight / 2) * mapWidth + 1];
-    endNode = &nodes[(mapHeight / 2) * mapWidth + mapWidth - 2];
-} 
+    if (!Dpressed) {
+        startNode = &nodes[(mapHeight / 2) * mapWidth + 1];
+        endNode = &nodes[(mapHeight / 2) * mapWidth + mapWidth - 2];
+    }
+    else {
+        // Ensure startNode and endNode are different when D key is pressed is true
+        if (temp_x >= 0 && temp_x < mapWidth && temp_y >= 0 && temp_y < mapHeight) {
+            if (startNode == nullptr) { // check if start node has not been selected yet
+                startNode = &nodes[temp_y * mapWidth + temp_x];  // if so assign the startnode to its current position 
+            }
+            else if (endNode == nullptr) { 
+                endNode = &nodes[temp_y * mapWidth + temp_x];  // assign the endnode to its current position if it is changed
+            }
+        }
+    }
+}
 
 void Pathfinding::solveAStar() {
     for (auto& node : nodes) {
@@ -111,22 +124,17 @@ void Pathfinding::solveAStar() {
 
 void Pathfinding::handleEvent(sf::Event event) {
     // this will toggle when D is pressed allowing path to visit diagonally in all 8 direction 
-    if (event.type == sf::Event::KeyPressed) {
-        if (event.key.code == sf::Keyboard::D) {
-            includeDiagonalsFlag = !includeDiagonalsFlag;  // Toggle the flag
-            updateNeigboursNode();  // Update neighbors immediately after toggling
-        }
-    }
-
     if (event.type == sf::Event::MouseButtonReleased) {
         int x = event.mouseButton.x / nodeSize;
         int y = event.mouseButton.y / nodeSize;
+        temp_x = x; temp_y = y; 
 
         if (x >= 0 && x < mapWidth && y >= 0 && y < mapHeight) {
             if (event.mouseButton.button == sf::Mouse::Left) {
                 // this will take starting node and ending node to the position of mouse co-ordinates
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)) {
                     startNode = &nodes[y * mapWidth + x];
+                    std::cout << x << " " << y << std::endl; 
                 }
                 else if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
                     endNode = &nodes[y * mapWidth + x];
@@ -136,6 +144,16 @@ void Pathfinding::handleEvent(sf::Event event) {
                 }
                 solveAStar();
             }
+        }
+    }
+
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::D) { 
+            includeDiagonalsFlag = !includeDiagonalsFlag;  // Toggle the flag
+           // std::cout << temp_x << " " << temp_y << "\n"; 
+            Dpressed = true;
+            updateNeigboursNode();  // Update neighbors immediately after    
+            solveAStar();
         }
     }
 }
